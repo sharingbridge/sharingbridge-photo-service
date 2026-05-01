@@ -1,6 +1,6 @@
 # sharebridge-photo-service
 
-> Face detection and duplicate checking
+> Face detection and beneficiary assistance history review
 
 ## Overview
 
@@ -8,9 +8,9 @@ This repository contains the **Photo Verification Service** - AI-powered photo a
 
 **Key Responsibilities:**
 - 📸 Delivery photo verification and validation
-- 👤 Face detection for duplicate seeker identification
+- 👤 Face detection for beneficiary assistance history matching
 - 🔒 Privacy-preserving facial recognition (hashed embeddings)
-- 🚫 Fraud detection (same person, multiple accounts)
+- 🚫 Fraud detection and repeated assistance awareness
 - 🗑️ Automatic photo deletion after 30 days (privacy compliance)
 - 🖼️ Image quality assessment
 - 🏷️ Object detection (food items, location landmarks)
