@@ -1,46 +1,47 @@
 # sharingbridge-photo-service
 
-> Face detection and beneficiary assistance history review
+Python (FastAPI) service for **reference photo upload** to Cloudinary and artifact metadata in Postgres.
 
-## Overview
+## Endpoints
 
-This repository contains the **Photo Verification Service** - AI-powered photo analysis for delivery confirmation and fraud prevention.
+| Method | Path | Auth |
+|--------|------|------|
+| GET | `/health` | — |
+| POST | `/v1/photos/upload` | Bearer JWT (donor) |
+| GET | `/v1/photos/{artifact_id}` | Bearer JWT (donor owner or coordinator) |
 
-**Key Responsibilities:**
-- 📸 Delivery photo verification and validation
-- 👤 Face detection for beneficiary assistance history matching
-- 🔒 Privacy-preserving facial recognition (hashed embeddings)
-- 🚫 Fraud detection and repeated assistance awareness
-- 🗑️ Automatic photo deletion after 30 days (privacy compliance)
-- 🖼️ Image quality assessment
-- 🏷️ Object detection (food items, location landmarks)
-- 📊 Similarity scoring between photos
-- 🛡️ GDPR/DPDPA compliant photo handling
+## Configuration
 
-**Technology Stack:** Python with OpenCV, TensorFlow/PyTorch, Azure Cognitive Services or AWS Rekognition
+See [env.example](./env.example) (copy to `.env` locally; `.env*` is gitignored). Use the same `AUTH_TOKEN_SECRET` / issuer / audience as `sharingbridge-user-service`.
 
-For overall project context, see the [main SharingBridge repository](https://github.com/sharingbridge/sharingbridge).
+For local dev without Cloudinary: `PHOTO_UPLOAD_MOCK=true`.
 
-## Repository Status
+## Run
 
-🚧 **Status:** Initial Setup  
-📅 **Date:** January 9, 2026
+Requires **Python 3.10+** (3.13 works). Use a project venv; **do not** use Anaconda’s default `python` (often 3.7).
 
-## Getting Started
+```powershell
+cd sharingbridge-photo-service
+python3.13 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+python -m pytest -q
+uvicorn app.main:app --reload --port 8092
+```
 
-> Coming soon - Development setup instructions
+On Windows, `python` may still point at Anaconda — always use `python3.13` or the venv’s `.\.venv\Scripts\python.exe`.
 
-## Contributing
+Docker: see [Dockerfile](./Dockerfile) (port `8092`).
 
-See the [main repository's CALL_FOR_CONTRIBUTORS.md](https://github.com/sharingbridge/sharingbridge/blob/main/development/CALL_FOR_CONTRIBUTORS.md) for:
-- How to contribute (technical and non-technical)
-- Joining GitHub Discussions
-- Submitting prompts and feature ideas
+Setup guide: [configuration/photo-service-local.md](https://github.com/sharingbridge/sharingbridge/blob/main/configuration/photo-service-local.md) in the main repo.
 
-## License
+## Tests
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```powershell
+pytest -q
+```
 
----
+## Roadmap
 
-Part of the [SharingBridge](https://github.com/sharingbridge/sharingbridge) ecosystem
+- On-server image processing (resize, privacy blur) before upload
+- `delivery_acknowledgement` photo type and match scoring
