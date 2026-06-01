@@ -25,6 +25,8 @@ cd sharingbridge-photo-service
 python3.13 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements-dev.txt
+copy env.example .env
+# Edit .env (see env.example), then:
 python -m pytest -q
 uvicorn app.main:app --reload --port 8092
 ```
