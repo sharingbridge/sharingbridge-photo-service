@@ -1,4 +1,10 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Same pattern as Node services (`import "dotenv/config"`): load repo `.env` before Settings.
+load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=False)
 
 
 def env_bool(name: str, default: bool = False) -> bool:
