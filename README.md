@@ -35,6 +35,17 @@ On Windows, `python` may still point at Anaconda — always use `python3.13` or 
 
 Docker: see [Dockerfile](./Dockerfile) (port `8092`).
 
+## Deploy (Render)
+
+Root **`render.yaml`** — **New +** → **Blueprint** → this repo → set `AUTH_TOKEN_SECRET` and `DATABASE_URL` (same as user-service). Leave **Start Command** blank. Enable **Auto-Deploy on commit** to `main`.
+
+| Variable | Notes |
+|----------|--------|
+| `PHOTO_UPLOAD_MOCK` | `true` until Cloudinary is configured |
+| `CLOUDINARY_*` | Optional for real uploads |
+
+Guide: [configuration/backend-render.md](https://github.com/sharingbridge/sharingbridge/blob/main/configuration/backend-render.md).
+
 Setup guide: [configuration/photo-service-local.md](https://github.com/sharingbridge/sharingbridge/blob/main/configuration/photo-service-local.md) in the main repo.
 
 ## Tests

@@ -1,0 +1,32 @@
+# Render Blueprint — Docker Web Service (same pattern as ai-orchestration).
+# Leave Start Command blank in the dashboard; image uses start.sh.
+# Guide: https://github.com/sharingbridge/sharingbridge/blob/main/configuration/backend-render.md
+#
+# After deploy: set AUTH_TOKEN_SECRET (same as user-service) and DATABASE_URL (Supabase).
+# Without Cloudinary: PHOTO_UPLOAD_MOCK=true. With Cloudinary: set CLOUDINARY_* and PHOTO_UPLOAD_MOCK=false.
+services:
+  - type: web
+    name: sharingbridge-photo-service
+    runtime: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: AUTH_TOKEN_ISSUER
+        value: sharingbridge-user-service
+      - key: AUTH_TOKEN_AUDIENCE
+        value: sharingbridge-clients
+      - key: AUTH_TOKEN_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: PHOTO_UPLOAD_MOCK
+        value: "true"
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
