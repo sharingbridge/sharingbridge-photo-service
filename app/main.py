@@ -24,6 +24,7 @@ ALLOWED_PHOTO_TYPES = {"seeker_reference", "delivery_acknowledgement"}
 
 @app.on_event("startup")
 def startup() -> None:
+    settings.require_cloudinary()
     if not settings.database_url:
         return
     with get_connection() as conn:
@@ -36,7 +37,6 @@ def health() -> dict:
         "ok": True,
         "service": "photo-service",
         "cloudinary_configured": settings.cloudinary_configured,
-        "upload_mock": settings.photo_upload_mock,
     }
 
 
@@ -71,15 +71,6 @@ async def upload_photo(
             detail={
                 "code": "storage_unavailable",
                 "message": "DATABASE_URL is not configured.",
-            },
-        )
-
-    if not settings.cloudinary_configured:
-        raise HTTPException(
-            status_code=503,
-            detail={
-                "code": "cloudinary_unconfigured",
-                "message": "Set Cloudinary credentials or PHOTO_UPLOAD_MOCK=true for local dev.",
             },
         )
 

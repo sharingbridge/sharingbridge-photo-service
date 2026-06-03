@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import uuid
 from typing import Any
 
 import cloudinary
@@ -40,20 +39,7 @@ def upload_reference_photo(
     if mime_type not in ALLOWED_MIME:
         raise ValueError("Only JPEG, PNG, or WebP images are allowed.")
 
-    if settings.photo_upload_mock:
-        artifact_suffix = uuid.uuid4().hex[:12]
-        public_id = f"sharingbridge/mock/reference/{user_id}/{artifact_suffix}"
-        view_url = f"https://res.cloudinary.com/demo/image/upload/{public_id}.jpg"
-        thumb_url = f"{view_url}?w=200&h=200&c=limit"
-        return {
-            "cloudinary_public_id": public_id,
-            "view_url": view_url,
-            "thumbnail_url": thumb_url,
-        }
-
-    if not settings.cloudinary_configured:
-        raise RuntimeError("Cloudinary is not configured.")
-
+    settings.require_cloudinary()
     _configure_cloudinary()
     folder = f"sharingbridge/reference/{user_id}"
     result = cloudinary.uploader.upload(

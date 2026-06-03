@@ -14,7 +14,7 @@ Python (FastAPI) service for **reference photo upload** to Cloudinary and artifa
 
 See [env.example](./env.example) (copy to `.env` locally; `.env*` is gitignored). Use the same `AUTH_TOKEN_SECRET` / issuer / audience as `sharingbridge-user-service`.
 
-For local dev without Cloudinary: `PHOTO_UPLOAD_MOCK=true`.
+**Cloudinary is required** (`CLOUDINARY_URL` or `CLOUDINARY_CLOUD_NAME` + `CLOUDINARY_API_KEY` + `CLOUDINARY_API_SECRET`).
 
 ## Run
 
@@ -41,8 +41,7 @@ Root **`render.yaml`** — **New +** → **Blueprint** → this repo → set `AU
 
 | Variable | Notes |
 |----------|--------|
-| `PHOTO_UPLOAD_MOCK` | `true` until Cloudinary is configured |
-| `CLOUDINARY_*` | Optional for real uploads |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Required (or `CLOUDINARY_URL`) |
 
 Guide: [configuration/backend-render.md](https://github.com/sharingbridge/sharingbridge/blob/main/configuration/backend-render.md).
 
