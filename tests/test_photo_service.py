@@ -46,6 +46,8 @@ def test_health():
     body = response.json()
     assert body["ok"] is True
     assert body["service"] == "photo-service"
+    assert "config" in body
+    assert "log_level" in body["config"]
 
 
 def test_verify_auth_token_roundtrip():

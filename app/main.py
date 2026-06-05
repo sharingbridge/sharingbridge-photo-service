@@ -12,6 +12,9 @@ from .auth import require_donor, require_donor_or_coordinator
 from .cloudinary_client import ALLOWED_MIME, upload_reference_photo
 from .config import settings
 from .db import ensure_schema, fetch_artifact, get_connection, insert_artifact, new_artifact_id
+from .service_log import configure_logging, log_startup_from_issues, resolve_log_level
+
+logger = configure_logging("photo-service")
 
 app = FastAPI(
     title="SharingBridge Photo Service",
@@ -22,8 +25,29 @@ app = FastAPI(
 ALLOWED_PHOTO_TYPES = {"seeker_reference", "delivery_acknowledgement"}
 
 
+def _public_config() -> dict:
+    return {
+        "service": "photo-service",
+        "database_url_set": bool(settings.database_url),
+        "cloudinary_configured": settings.cloudinary_configured,
+        "auth_token_secret_set": bool(settings.auth_token_secret),
+        "log_level": resolve_log_level(),
+    }
+
+
+def _startup_config_issues(config: dict) -> list[str]:
+    issues: list[str] = []
+    if not config.get("cloudinary_configured"):
+        issues.append("Cloudinary is not configured")
+    if not config.get("database_url_set"):
+        issues.append("DATABASE_URL is unset (upload metadata will be unavailable)")
+    return issues
+
+
 @app.on_event("startup")
 def startup() -> None:
+    config = _public_config()
+    log_startup_from_issues(logger, config, _startup_config_issues(config))
     settings.require_cloudinary()
     if not settings.database_url:
         return
@@ -36,7 +60,7 @@ def health() -> dict:
     return {
         "ok": True,
         "service": "photo-service",
-        "cloudinary_configured": settings.cloudinary_configured,
+        "config": _public_config(),
     }
 
 
