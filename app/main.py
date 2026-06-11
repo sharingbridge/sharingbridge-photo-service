@@ -181,7 +181,7 @@ def get_photo(
 
     role = auth.get("role")
     user_id = auth["sub"].strip()
-    if role == "donor" and record["user_id"] != user_id:
+    if role in {"donor", "initiator"} and record["user_id"] != user_id:
         raise HTTPException(status_code=403, detail={"code": "forbidden", "message": "Not your photo."})
 
     return record

@@ -38,15 +38,19 @@ def get_auth_payload(
         ) from exc
 
 
+def is_initiator_role(role: str | None) -> bool:
+    return role in {"initiator", "donor"}
+
+
 def require_donor(
     payload: Annotated[dict, Depends(get_auth_payload)],
 ) -> dict:
-    if payload.get("role") != "donor":
+    if not is_initiator_role(payload.get("role")):
         raise HTTPException(
             status_code=403,
             detail={
                 "code": "forbidden",
-                "message": "This action requires a donor account.",
+                "message": "This action requires an initiator account.",
             },
         )
     return payload
@@ -56,12 +60,12 @@ def require_donor_or_coordinator(
     payload: Annotated[dict, Depends(get_auth_payload)],
 ) -> dict:
     role = payload.get("role")
-    if role not in {"donor", "coordinator"}:
+    if not is_initiator_role(role) and role != "coordinator":
         raise HTTPException(
             status_code=403,
             detail={
                 "code": "forbidden",
-                "message": "This action requires a donor or coordinator account.",
+                "message": "This action requires an initiator or coordinator account.",
             },
         )
     return payload

@@ -93,3 +93,17 @@ def test_upload_rejects_coordinator():
         data={"photo_type": "seeker_reference"},
     )
     assert response.status_code == 403
+
+
+def test_upload_accepts_initiator_role():
+    token = _mint_token("alice", role="initiator")
+    response = client.post(
+        "/v1/photos/upload",
+        headers={"authorization": f"Bearer {token}"},
+        files={"file": ("ref.jpg", b"\xff\xd8\xff", "image/jpeg")},
+        data={"photo_type": "seeker_reference"},
+    )
+    assert response.status_code != 403
+    assert response.json().get("detail", {}).get("message") != (
+        "This action requires a donor account."
+    )
